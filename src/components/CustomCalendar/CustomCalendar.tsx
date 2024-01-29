@@ -1,5 +1,15 @@
-import styles from './styles.module.scss'
-import cn from 'classnames'
+import styles   from './styles.module.scss'
+import {
+    default as React,
+    useState,
+    useEffect,
+}               from 'react'
+import {
+    createPortal,
+}               from 'react-dom'
+import cn       from 'classnames'
+
+
 
 const monthLetters = Object.fromEntries(
     new Array(12).fill(null).map((value, index) =>
@@ -46,72 +56,110 @@ export const CustomCalendar = (props: CustomCalendarProps): JSX.Element => {
     ;
     
     
+    
+    const [portalContainer, setPortalContainer] = useState<HTMLElement|null>(null);
+    useEffect(() => {
+        const portalContainerElm = document.createElement('div');
+        portalContainerElm.classList.add(styles.tooltipPortal);
+        document.body.appendChild(portalContainerElm);
+        setPortalContainer(portalContainerElm);
+        
+        return () => {
+            portalContainerElm.parentElement?.removeChild?.(portalContainerElm);
+        };
+    }, []);
+    const [showTooltip, setShowTooltip] = useState<React.ReactNode>(undefined);
+    const [tooltipPos, setTooltipPos] = useState<React.CSSProperties>({});
+    
+    
+    
     // jsx:
     return (
-        <div className={styles.calendar} style={{
-            // @ts-ignore
-            '--mapPrecision': mapPrecision,
-        }}>
-            <div className={styles.years}>
-                {new Array(yearsCount).fill(null).map((value, index) =>
-                    <div key={index}>
-                        {fromYear + index}
-                    </div>
-                )}
-            </div>
-            <div className={styles.monthGrid} style={{
+        <>
+            <div className={styles.calendar} style={{
                 // @ts-ignore
-                '--monthCount': monthsCount,
+                '--cldr-mapPrecision': mapPrecision,
             }}>
-                <div className={styles.monthCells}>
-                    {new Array(monthsCount).fill(null).map((value, index) =>
-                        <div className={cn(styles.monthCell, styles.monthCellGrid)} key={index}></div>
-                    )}
-                </div>
-                <div className={styles.monthLabels}>
-                    {new Array(monthsCount).fill(null).map((value, index) =>
-                        <div className={cn(styles.monthCell, styles.monthLabel)} key={index}>
-                            {monthLetters[((fromMonth + index) % 12) + 1]}
+                <div className={styles.years}>
+                    {new Array(yearsCount).fill(null).map((value, index) =>
+                        <div key={index}>
+                            {fromYear + index}
                         </div>
                     )}
                 </div>
-                <div className={styles.monthGraphs}>
-                    {data.map(({from: localFrom, to: localTo, name}, index) => {
-                        const relativeFromColumn = (
-                            (localFrom.getFullYear() * 12 * mapPrecision) + (localFrom.getMonth() * mapPrecision) + Math.round((localFrom.getDate() - 1) / ( getMonthDays(localFrom) - 1) * mapPrecision)
-                            -
-                            (from.getFullYear()      * 12 * mapPrecision) + (from.getMonth()      * mapPrecision) + Math.round((from.getDate()      - 1) / (getMonthDays(from)       - 1) * mapPrecision)
-                        );
-                        const relativeToColumn = (
-                            (localTo.getFullYear()   * 12 * mapPrecision) + (localTo.getMonth()   * mapPrecision) + Math.round((localTo.getDate()   - 1) / (getMonthDays(localTo)    - 1) * mapPrecision)
-                            -
-                            (from.getFullYear()      * 12 * mapPrecision) + (from.getMonth()      * mapPrecision) + Math.round((from.getDate()      - 1) / (getMonthDays(from)       - 1) * mapPrecision)
-                        );
-                        const relativeToSpan = (
-                            relativeToColumn - relativeFromColumn
-                        )
-                        // const relativeFromMonth = from.getMonth()    - fromMonth;
-                        // const relativeToYear    = to.getFullYear()   - fromYear;
-                        // const relativeToMonth   = to.getFullYear()   - fromMonth;
-                        // const chartFrom         = (relativeFromMonth + (12 * relativeFromYear)) * mapPrecision;
-                        // const chartTo           = (relativeToMonth   + (12 * relativeToYear  )) * mapPrecision;
-                        // const chartSpan         = chartTo - chartFrom;
-                        // jsx:
-                        return (
-                            <div key={index} className={styles.monthRow}>
-                                <div className={styles.monthChart} style={{
-                                    // @ts-ignore
-                                    '--chartFrom' : relativeFromColumn + 1,
-                                    // @ts-ignore
-                                    '--chartSpan' : Math.max(relativeToSpan, 1),
-                                }}>
-                                    {name}
-                                </div>
+                <div className={styles.monthGrid} style={{
+                    // @ts-ignore
+                    '--cldr-monthCount': monthsCount,
+                }}>
+                    <div className={styles.monthCells}>
+                        {new Array(monthsCount).fill(null).map((value, index) =>
+                            <div className={cn(styles.monthCell, styles.monthCellGrid)} key={index}></div>
+                        )}
+                    </div>
+                    <div className={styles.monthLabels}>
+                        {new Array(monthsCount).fill(null).map((value, index) =>
+                            <div className={cn(styles.monthCell, styles.monthLabel)} key={index}>
+                                {monthLetters[((fromMonth + index) % 12) + 1]}
                             </div>
-                        );
-                    })}
+                        )}
+                    </div>
+                    <div className={styles.monthGraphs}>
+                        {data.map(({from: localFrom, to: localTo, name}, index) => {
+                            const relativeFromColumn = (
+                                (localFrom.getFullYear() * 12 * mapPrecision) + (localFrom.getMonth() * mapPrecision) + Math.round((localFrom.getDate() - 1) / ( getMonthDays(localFrom) - 1) * mapPrecision)
+                                -
+                                (from.getFullYear()      * 12 * mapPrecision) + (from.getMonth()      * mapPrecision) + Math.round((from.getDate()      - 1) / (getMonthDays(from)       - 1) * mapPrecision)
+                            );
+                            const relativeToColumn = (
+                                (localTo.getFullYear()   * 12 * mapPrecision) + (localTo.getMonth()   * mapPrecision) + Math.round((localTo.getDate()   - 1) / (getMonthDays(localTo)    - 1) * mapPrecision)
+                                -
+                                (from.getFullYear()      * 12 * mapPrecision) + (from.getMonth()      * mapPrecision) + Math.round((from.getDate()      - 1) / (getMonthDays(from)       - 1) * mapPrecision)
+                            );
+                            const relativeToSpan = (
+                                relativeToColumn - relativeFromColumn
+                            );
+                            // jsx:
+                            return (
+                                <div key={index} className={styles.monthRow}>
+                                    <div className={styles.monthChart}
+                                        style={{
+                                            // @ts-ignore
+                                            '--cldr-chartFrom' : relativeFromColumn + 1,
+                                            // @ts-ignore
+                                            '--cldr-chartSpan' : Math.max(relativeToSpan, 1),
+                                        }}
+                                        onMouseEnter={(event) => {
+                                            setShowTooltip(
+                                                <p>
+                                                    from {localFrom.toLocaleDateString()} to {localTo.toLocaleDateString()}
+                                                </p>
+                                            );
+                                            const {
+                                                left, right,
+                                                top,
+                                            } = event.currentTarget.getBoundingClientRect();
+                                            setTooltipPos({
+                                                left : `${(left + right) / 2}px`,
+                                                top : `${top}px`,
+                                            });
+                                        }}
+                                        onMouseLeave={() => {
+                                            setShowTooltip(undefined);
+                                        }}
+                                    >
+                                        {name}
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
                 </div>
             </div>
-        </div>
+            {!!portalContainer && createPortal(
+                !!showTooltip && <div className={cn(styles.tooltip)} style={tooltipPos}>
+                    {showTooltip}
+                </div>
+            , portalContainer)}
+        </>
     );
 }

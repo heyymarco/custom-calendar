@@ -1,12 +1,17 @@
+:root {
+    --cldr-bg-color: #ffffff;
+    --cldr-bar-color: #3B39D9;
+    --cldr-bar-text-color: #ffffff;
+    --cldr-month-n1-color: #f0efff;
+    --cldr-month-n2-color: #f1f6e5;
+    --cldr-month-n3-color: #fef5e7;
+    --cldr-tooltip-bg-color: #f5e38c;
+    --cldr-tooltip-bd-color: #c78d02;
+    --cldr-tooltip-fg-color: #2a1718;
+}
+
 .calendar {
-    --bg-color: #ffffff;
-    --bar-color: #3B39D9;
-    --bar-text-color: #ffffff;
-    --month-n1-color: #f0efff;
-    --month-n2-color: #f1f6e5;
-    --month-n3-color: #fef5e7;
-    
-    background: var(--bg-color);
+    background: var(--cldr-bg-color);
     display: grid;
     text-align: center;
 }
@@ -19,7 +24,7 @@
 .monthGrid {
     display: grid;
     grid-auto-flow: column;
-    grid-template-columns: repeat(calc(var(--monthCount) * var(--mapPrecision, 10)), 1fr);
+    grid-template-columns: repeat(calc(var(--cldr-monthCount) * var(--cldr-mapPrecision, 10)), 1fr);
     grid-template-rows: max-content 1fr;
     column-gap: 1px;
 }
@@ -29,7 +34,7 @@
     grid-template-columns: subgrid;
 }
 .monthCell {
-    grid-column-end: span var(--mapPrecision, 10);
+    grid-column-end: span var(--cldr-mapPrecision, 10);
 }
 .monthCellGrid {
     padding: 0.25rem;
@@ -48,7 +53,7 @@
         :nth-child(36n+11),
         :nth-child(36n+12)
     ) {
-        background-color: var(--month-n1-color);
+        background-color: var(--cldr-month-n1-color);
     }
     &:is(
         :nth-child(36n+13),
@@ -64,7 +69,7 @@
         :nth-child(36n+23),
         :nth-child(36n+24)
     ) {
-        background-color: var(--month-n2-color);
+        background-color: var(--cldr-month-n2-color);
     }
     &:is(
         :nth-child(36n+25),
@@ -80,7 +85,7 @@
         :nth-child(36n+35),
         :nth-child(36n+36)
     ) {
-        background-color: var(--month-n3-color);
+        background-color: var(--cldr-month-n3-color);
     }
 }
 .monthLabels {
@@ -105,14 +110,53 @@
     grid-template-columns: subgrid;
 }
 .monthChart {
-    grid-column-start: var(--chartFrom, 0);
-    grid-column-end: span var(--chartSpan, 1);
-    background-color: var(--bar-color);
-    color: var(--bar-text-color);
+    grid-column-start: var(--cldr-chartFrom, 0);
+    grid-column-end: span var(--cldr-chartSpan, 1);
+    background-color: var(--cldr-bar-color);
+    color: var(--cldr-bar-text-color);
     align-self: center;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
     padding-block: 0.25rem;
     border-radius: 10rem;
+    cursor: pointer;
+    &:hover {
+        filter: brightness(120%);
+    }
+}
+
+
+.tooltipPortal {
+    display: contents;
+}
+.tooltip {
+    position: fixed;
+    translate: -50% calc(-100% - 0.5rem);
+    background-color: var(--cldr-tooltip-bg-color);
+    border: solid 1px var(--cldr-tooltip-bd-color);
+    color: var(--cldr-tooltip-fg-color);
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    pointer-events: none;
+    &>p {
+        margin: 0;
+        font-size: smaller;
+    }
+    &::before {
+        content: "";
+        display: block;
+        background-color: inherit;
+        border: inherit;
+        border-inline-start: none;
+        border-block-start: none;
+        z-index: -1;
+        inline-size: 0.75rem;
+        block-size: 0.75rem;
+        position: absolute;
+        inset-block-start: 100%;
+        inset-inline-start: 50%;
+        translate: -50% -50%;
+        rotate: 45deg;
+    }
 }
