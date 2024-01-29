@@ -1,0 +1,58 @@
+.calendar {
+    background: pink;
+    display: grid;
+}
+.years {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    padding: 0.5rem;
+}
+.monthGrid {
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-columns: repeat(calc(var(--monthCount) * 10), 1fr);
+    grid-template-rows: max-content 1fr;
+    column-gap: 1px;
+    // --bd-col: solid 1px rgba(255, 255, 255, 0.5);
+    // border-block: var(--bd-col);
+}
+.monthCells {
+    grid-area: 1 / 1 / -1 / -1;
+    display: grid;
+    grid-template-columns: subgrid;
+}
+.monthCell {
+    grid-column-end: span 10;
+}
+.monthCellGrid {
+    padding: 0.25rem;
+    background-color: lightblue;
+}
+.monthLabels {
+    grid-area: 1 / 1 / 1 / -1;
+    display: grid;
+    grid-template-columns: subgrid;
+    border-block: solid 1px rgba(0, 0, 0, 0.25);
+    padding: 0.25rem;
+}
+.monthGraphs {
+    grid-area: 2 / 1 / 2 / -1;
+    display: grid;
+    grid-template-columns: subgrid;
+    grid-auto-flow: row;
+    row-gap: 0.5rem;
+    padding-block: 0.5rem;
+    // background-color: rgba(0,0,255, 0.25);
+}
+.monthRow {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: subgrid;
+}
+.monthChart {
+    grid-column-end: span 75;
+    background-color: blue;
+    color: white;
+    align-self: center;
+}
