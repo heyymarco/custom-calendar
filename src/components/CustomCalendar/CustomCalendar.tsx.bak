@@ -19,7 +19,7 @@ const monthLetters = Object.fromEntries(
 const getMonthDays = (date: Date): number => {
     const year = date.getFullYear();
     const month = date.getMonth();
-    const isLeap = ((year % 4) == 0 && ((year % 100) != 0 || (year % 400) == 0));
+    const isLeap = ((year % 4) === 0 && ((year % 100) !== 0 || (year % 400) === 0));
     return [31, (isLeap ? 29 : 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month];
 }
 
@@ -67,7 +67,7 @@ export const CustomCalendar = (props: CustomCalendarProps): JSX.Element => {
         return () => {
             portalContainerElm.parentElement?.removeChild?.(portalContainerElm);
         };
-    }, []);
+    }, [setPortalContainer]);
     const [showTooltip, setShowTooltip] = useState<React.ReactNode>(undefined);
     const [tooltipPos, setTooltipPos] = useState<React.CSSProperties>({});
     
