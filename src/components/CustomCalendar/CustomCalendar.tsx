@@ -30,7 +30,7 @@ export const CustomCalendar = (props: CustomCalendarProps): JSX.Element => {
         from,
         to,
         data = [],
-        mapPrecision = 5,
+        mapPrecision = 10,
     } = props;
     
     
