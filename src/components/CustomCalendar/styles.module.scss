@@ -1,6 +1,14 @@
 .calendar {
-    background: pink;
+    --bg-color: #ffffff;
+    --bar-color: #3B39D9;
+    --bar-text-color: #ffffff;
+    --month-n1-color: #f0efff;
+    --month-n2-color: #f1f6e5;
+    --month-n3-color: #fef5e7;
+    
+    background: var(--bg-color);
     display: grid;
+    text-align: center;
 }
 .years {
     display: grid;
@@ -11,11 +19,9 @@
 .monthGrid {
     display: grid;
     grid-auto-flow: column;
-    grid-template-columns: repeat(calc(var(--monthCount) * 10), 1fr);
+    grid-template-columns: repeat(calc(var(--monthCount) * var(--mapPrecision, 10)), 1fr);
     grid-template-rows: max-content 1fr;
     column-gap: 1px;
-    // --bd-col: solid 1px rgba(255, 255, 255, 0.5);
-    // border-block: var(--bd-col);
 }
 .monthCells {
     grid-area: 1 / 1 / -1 / -1;
@@ -23,11 +29,59 @@
     grid-template-columns: subgrid;
 }
 .monthCell {
-    grid-column-end: span 10;
+    grid-column-end: span var(--mapPrecision, 10);
 }
 .monthCellGrid {
     padding: 0.25rem;
-    background-color: lightblue;
+    
+    &:is(
+        :nth-child(36n+1),
+        :nth-child(36n+2),
+        :nth-child(36n+3),
+        :nth-child(36n+4),
+        :nth-child(36n+5),
+        :nth-child(36n+6),
+        :nth-child(36n+7),
+        :nth-child(36n+8),
+        :nth-child(36n+9),
+        :nth-child(36n+10),
+        :nth-child(36n+11),
+        :nth-child(36n+12)
+    ) {
+        background-color: var(--month-n1-color);
+    }
+    &:is(
+        :nth-child(36n+13),
+        :nth-child(36n+14),
+        :nth-child(36n+15),
+        :nth-child(36n+16),
+        :nth-child(36n+17),
+        :nth-child(36n+18),
+        :nth-child(36n+19),
+        :nth-child(36n+20),
+        :nth-child(36n+21),
+        :nth-child(36n+22),
+        :nth-child(36n+23),
+        :nth-child(36n+24)
+    ) {
+        background-color: var(--month-n2-color);
+    }
+    &:is(
+        :nth-child(36n+25),
+        :nth-child(36n+26),
+        :nth-child(36n+27),
+        :nth-child(36n+28),
+        :nth-child(36n+29),
+        :nth-child(36n+30),
+        :nth-child(36n+31),
+        :nth-child(36n+32),
+        :nth-child(36n+33),
+        :nth-child(36n+34),
+        :nth-child(36n+35),
+        :nth-child(36n+36)
+    ) {
+        background-color: var(--month-n3-color);
+    }
 }
 .monthLabels {
     grid-area: 1 / 1 / 1 / -1;
@@ -42,7 +96,7 @@
     grid-template-columns: subgrid;
     grid-auto-flow: row;
     row-gap: 0.5rem;
-    padding-block: 0.5rem;
+    padding-block: 1rem;
     // background-color: rgba(0,0,255, 0.25);
 }
 .monthRow {
@@ -51,8 +105,14 @@
     grid-template-columns: subgrid;
 }
 .monthChart {
-    grid-column-end: span 75;
-    background-color: blue;
-    color: white;
+    grid-column-start: var(--chartFrom, 0);
+    grid-column-end: span var(--chartSpan, 1);
+    background-color: var(--bar-color);
+    color: var(--bar-text-color);
     align-self: center;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    padding-block: 0.25rem;
+    border-radius: 10rem;
 }
