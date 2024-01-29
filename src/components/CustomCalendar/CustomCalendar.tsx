@@ -98,7 +98,7 @@ export const CustomCalendar = (props: CustomCalendarProps): JSX.Element => {
                         // const chartSpan         = chartTo - chartFrom;
                         // jsx:
                         return (
-                            <div className={styles.monthRow}>
+                            <div key={index} className={styles.monthRow}>
                                 <div className={styles.monthChart} style={{
                                     // @ts-ignore
                                     '--chartFrom' : relativeFromColumn + 1,
